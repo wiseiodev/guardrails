@@ -1,5 +1,5 @@
 module.exports = {
-  branches: [{ name: 'main', channel: 'next', prerelease: 'alpha' }],
+  branches: ['main', { name: 'alpha', channel: 'next', prerelease: 'alpha' }],
   // biome-ignore lint/suspicious/noTemplateCurlyInString: semantic-release placeholder syntax
   tagFormat: 'v${version}',
   plugins: [
