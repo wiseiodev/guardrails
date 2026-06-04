@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/wiseiodev/guardrails/compare/v1.0.0...v1.0.1) (2026-06-04)
+
+### Bug Fixes
+
+* **cli:** save generated plan json ([#5](https://github.com/wiseiodev/guardrails/issues/5)) ([31be408](https://github.com/wiseiodev/guardrails/commit/31be4082b155f9d99a10c3141b383cf72a649f27))
+
 ## [1.0.1-alpha.1](https://github.com/wiseiodev/guardrails/compare/v1.0.0...v1.0.1-alpha.1) (2026-06-04)
 
 ### Bug Fixes
