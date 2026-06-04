@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { applyPlan } from './apply.js'
 import { CONFIG_FILE, defaultConfig, loadConfig, serializeConfig } from './config.js'
+import { PLAN_FILE } from './constants.js'
 import { doctorReport } from './doctor.js'
 import { inspectRepo } from './inspect.js'
 import { createPlan } from './planner.js'
@@ -76,6 +77,9 @@ function runPlan(
   const config = loadConfig(cwd, inspection)
   const plan = createPlan(inspection, config)
   printPayload(plan, options.json)
+  const planPath = path.join(cwd, PLAN_FILE)
+  mkdirSync(path.dirname(planPath), { recursive: true })
+  writeFileSync(planPath, `${JSON.stringify(plan, null, 2)}\n`)
 }
 
 function runApply(
