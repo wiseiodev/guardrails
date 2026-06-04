@@ -1,0 +1,48 @@
+{
+  "name": "@wiseiodev/guardrails",
+  "version": "0.1.0",
+  "description": "Agent-friendly guardrails for JS/TS pnpm repositories.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wiseiodev/guardrails.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wiseiodev/guardrails/issues"
+  },
+  "homepage": "https://github.com/wiseiodev/guardrails#readme",
+  "bin": {
+    "guardrails": "./dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./commitlint": "./dist/commitlint.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "checks": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "dev": "tsx src/cli.ts",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "packageManager": "pnpm@11.5.0",
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "@types/node": "25.1.0",
+    "tsx": "4.22.3",
+    "typescript": "5.9.3",
+    "vitest": "4.1.6"
+  }
+}
