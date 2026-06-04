@@ -1,6 +1,6 @@
 {
   "name": "@wiseiodev/guardrails",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Agent-friendly guardrails for JS/TS pnpm repositories.",
   "type": "module",
   "license": "MIT",

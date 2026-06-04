@@ -1,3 +1,11 @@
+## [1.0.0-alpha.2](https://github.com/wiseiodev/guardrails/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2026-06-04)
+
+### Bug Fixes
+
+* align prerelease branch config ([#2](https://github.com/wiseiodev/guardrails/issues/2)) ([9cc4658](https://github.com/wiseiodev/guardrails/commit/9cc4658932fc520d9aac179374c20050a8cde962))
+* **release:** connect alpha release history ([89ad901](https://github.com/wiseiodev/guardrails/commit/89ad90180bd2efaab0708a424a7d5e99b479a86b))
+* **release:** mirror linear-cli workflow ([#3](https://github.com/wiseiodev/guardrails/issues/3)) ([c74bec8](https://github.com/wiseiodev/guardrails/commit/c74bec85b80a2669879c84fe2ea1f5e15954097a))
+
 ## 1.0.0-alpha.1 (2026-06-04)
 
 ### Features
