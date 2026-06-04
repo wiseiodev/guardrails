@@ -1,9 +1,9 @@
-name: release-prerelease
+name: Release Prerelease
 
 on:
   push:
     branches:
-      - alpha
+      - main
 
 jobs:
   prerelease:
@@ -12,7 +12,6 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -27,18 +26,18 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Checks
-        run: pnpm checks
+      - name: Verify
+        run: pnpm verify
+
+      - name: Build
+        run: pnpm build
 
       - name: Publish prerelease
         run: pnpm exec semantic-release --extends ./.releaserc.prerelease.cjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
