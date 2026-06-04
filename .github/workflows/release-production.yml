@@ -25,9 +25,11 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: Guard main branch only
+        env:
+          REF: ${{ inputs.ref }}
         run: |
-          if [ "${{ inputs.ref }}" != "main" ]; then
-            echo "::error::release-production can only run on main, got ${{ inputs.ref }}"
+          if [ "$REF" != "main" ]; then
+            echo "::error::release-production can only run on main, got $REF"
             exit 1
           fi
 
