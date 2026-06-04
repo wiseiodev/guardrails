@@ -1,4 +1,4 @@
-name: release-production
+name: Release Production
 
 on:
   workflow_dispatch:
@@ -19,40 +19,31 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
 
-      - name: Guard main branch only
-        env:
-          REF: ${{ inputs.ref }}
-        run: |
-          if [ "$REF" != "main" ]; then
-            echo "::error::release-production can only run on main, got $REF"
-            exit 1
-          fi
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        uses: pnpm/action-setup@v4
 
       - name: Setup Node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Checks
-        run: pnpm checks
+      - name: Verify
+        run: pnpm verify
+
+      - name: Build
+        run: pnpm build
 
       - name: Publish production release
         run: pnpm exec semantic-release --extends ./.releaserc.release.cjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
