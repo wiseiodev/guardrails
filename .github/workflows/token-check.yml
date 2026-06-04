@@ -1,0 +1,83 @@
+name: token-expiry-check
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check expiry date
+        id: expiry
+        env:
+          NPM_TOKEN_EXPIRES: ${{ vars.NPM_TOKEN_EXPIRES }}
+        run: |
+          if [ -z "$NPM_TOKEN_EXPIRES" ]; then
+            echo "::error::Repo variable NPM_TOKEN_EXPIRES is not set"
+            exit 1
+          fi
+          EXPIRES=$(date -d "$NPM_TOKEN_EXPIRES" +%s)
+          NOW=$(date +%s)
+          DAYS_LEFT=$(( (EXPIRES - NOW) / 86400 ))
+          echo "days_left=$DAYS_LEFT" >> "$GITHUB_OUTPUT"
+          if [ "$DAYS_LEFT" -le 14 ]; then
+            echo "::warning::NPM_TOKEN expires in ${DAYS_LEFT} days (${NPM_TOKEN_EXPIRES})"
+            echo "needs_rotation=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Token OK — ${DAYS_LEFT} days remaining"
+            echo "needs_rotation=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Verify token is functional
+        if: steps.expiry.outputs.needs_rotation == 'false'
+        id: token_check
+        continue-on-error: true
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.NPM_TOKEN }}" \
+            https://registry.npmjs.org/-/npm/v1/user)
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::NPM_TOKEN returned HTTP $STATUS"
+            exit 1
+          fi
+
+      - name: Create rotation issue
+        if: steps.expiry.outputs.needs_rotation == 'true' || steps.token_check.outcome == 'failure'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          NPM_TOKEN_EXPIRES: ${{ vars.NPM_TOKEN_EXPIRES }}
+          DAYS_LEFT: ${{ steps.expiry.outputs.days_left }}
+        with:
+          script: |
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'token-rotation',
+              state: 'open'
+            });
+            if (existing.data.length > 0) return;
+            const expires = process.env.NPM_TOKEN_EXPIRES;
+            const daysLeft = process.env.DAYS_LEFT;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔑 NPM_TOKEN expires ${expires}`,
+              body: [
+                '## Action Required',
+                '',
+                `The fine-grained npm token expires on **${expires}** (${daysLeft} days remaining).`,
+                '',
+                '### Steps',
+                '1. Go to [npmjs.com/settings/tokens](https://www.npmjs.com/settings/~/tokens)',
+                '2. Create new fine-grained token: write access to `@wiseiodev/guardrails`, "Bypass 2FA" enabled',
+                '3. Update `NPM_TOKEN` at [org secrets](https://github.com/organizations/wiseiodev/settings/secrets/actions)',
+                '4. Update the `NPM_TOKEN_EXPIRES` repo variable at [Actions variables](https://github.com/wiseiodev/guardrails/settings/variables/actions)',
+                '5. Close this issue'
+              ].join('\n'),
+              labels: ['token-rotation']
+            });

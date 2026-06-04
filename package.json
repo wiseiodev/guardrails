@@ -24,6 +24,9 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "checks": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
@@ -31,6 +34,8 @@
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
+    "release:pre": "semantic-release --extends ./.releaserc.prerelease.cjs",
+    "release:prod": "semantic-release --extends ./.releaserc.release.cjs",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -40,7 +45,15 @@
   "packageManager": "pnpm@11.5.0",
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/node": "25.1.0",
+    "conventional-changelog-conventionalcommits": "^9.3.0",
+    "semantic-release": "^25.0.3",
     "tsx": "4.22.3",
     "typescript": "5.9.3",
     "vitest": "4.1.6"
