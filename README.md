@@ -23,6 +23,9 @@ pnpm guardrails apply --yes
 pnpm guardrails doctor --json
 ```
 
+`plan --json` prints the plan to stdout and saves the same JSON object to
+`.guardrails/plan.json` for review or later automation.
+
 `apply` never mutates unless `--yes` is present. Remote GitHub changes are
 planned, but this first implementation only applies local repository files.
 

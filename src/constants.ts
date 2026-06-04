@@ -1,5 +1,6 @@
 export const PACKAGE_NAME = '@wiseiodev/guardrails'
 export const PACKAGE_VERSION = '0.1.0'
+export const PLAN_FILE = '.guardrails/plan.json'
 
 export const TOOL_VERSIONS = {
   biome: '2.4.15',
